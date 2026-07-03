@@ -1,0 +1,41 @@
+{
+	"name": "model-ops",
+	"version": "1.0.0",
+	"description": "ModelOps — track LLM usage, cost, latency and model performance",
+	"main": "index.js",
+	"scripts": {
+		"test": "jest",
+		"test:integration": "jest --testPathPattern=modelOps.spec",
+		"build": "tsc",
+		"start": "node dist/index.js"
+	},
+	"keywords": [
+		"LLM",
+		"cost",
+		"latency",
+		"tokens",
+		"token",
+		"performance",
+		"ai",
+		"model",
+		"optimization",
+		"ops",
+		"tracking"
+	],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/jest": "^30.0.0",
+		"jest": "^29.6.1",
+		"jest-ts": "^1.1.22",
+		"ts-jest": "^29.4.11",
+		"typescript": "^6.0.3"
+	},
+	"dependencies": {
+		"@anthropic-ai/sdk": "^0.106.0",
+		"@google/genai": "^2.10.0",
+		"axios": "^1.6.5",
+		"openai": "^6.44.0",
+		"dotenv": "^17.4.2"
+	}
+}
