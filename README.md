@@ -26,7 +26,7 @@ npm install model-ops
 
 Before using the SDK:
 
-1. Create a ModelOps account at https://www.modelops.ai
+1. Create a ModelOps account at https://modelops.me
 2. Copy your ModelOps API key from Account Settings
 3. Set at least one provider API key
 
@@ -178,8 +178,7 @@ Coming soon:
 
 ## Links
 
-- Product dashboard: https://www.modelops.ai
-- API endpoint: https://api.modelops.ai/events
+- Product dashboard: https://modelops.me
 
 ## License
 
