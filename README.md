@@ -4,18 +4,38 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-SDK-3178C6.svg)
 ![Providers](https://img.shields.io/badge/Providers-OpenAI%20%7C%20Anthropic%20%7C%20Gemini-2ea44f.svg)
 
-ModelOps is a TypeScript SDK that unifies OpenAI, Anthropic, and Gemini behind a single API, with built-in observability for tokens, latency, and estimated cost.
+ModelOps is a TypeScript SDK that unifies OpenAI, Anthropic, and Gemini behind a single API while automatically tracking tokens, latency, estimated cost, and business context.
+
+Build once. Switch providers. Understand your AI usage.
 
 ## Why ModelOps
-
-- One integration for multiple LLM providers
-- Standardized request and response handling
-- Automatic usage telemetry
-- Cost and latency visibility without custom pipelines
-- Business-aware analytics through request context
+- One SDK for OpenAI, Anthropic, and Gemini
+- Automatic token, latency, and cost tracking
+- Business-aware analytics with request context
+- Unified request and response API
+- Zero custom observability pipeline
 
 Note: Cost is estimated from public provider pricing and may differ from your invoice if you use enterprise pricing, discounts, cached tokens, batch APIs, or other provider-specific billing rules.
 
+## Why not use the provider SDKs?
+
+You absolutely can. But once you need to support multiple providers or understand AI usage in production, you'll likely end up building much of the same infrastructure yourself.
+
+Instead of building that yourself, ModelOps gives you:
+
+- One API across multiple providers
+- Built-in observability
+- Token and cost tracking
+- Business-level analytics
+- A centralized dashboard
+
+## How it works
+
+ModelOps wraps the official provider APIs.
+
+Your application continues calling OpenAI, Anthropic, or Gemini through a single SDK, while ModelOps automatically collects telemetry and sends it to your dashboard.
+
+No proxy or infrastructure changes required.
 ## Installation
 
 ```bash
@@ -47,7 +67,7 @@ MODELOPS_API_KEY=your_modelops_api_key
 You can provide provider keys through environment variables or directly in `modelKeys`.
 
 ## Quick Start
-
+Send your first request:
 ```ts
 import { ModelOps, ModelOpsChatRequest } from "model-ops";
 
@@ -76,7 +96,7 @@ const response = await modelOps.chat(request);
 console.log(response.content);
 ```
 
-## Add Business Context (Recommended)
+## Business Context (Recommended for production)
 
 Business context helps you analyze usage by product surface, customer, and workflow instead of only tokens and requests.
 
@@ -127,6 +147,7 @@ Collected data includes:
 
 Prompt and response content is not collected unless content capture is enabled.
 
+Your provider API keys are used only to send requests directly to the selected provider and are never stored by ModelOps.
 ```ts
 const modelOps = new ModelOps({
 	apiKey: process.env.MODELOPS_API_KEY!,
@@ -155,9 +176,18 @@ ModelOps dashboard insights include:
 - Error rates
 - Request volume
 
+
+## Early Access Pricing
+
+ModelOps is currently free while we're building the platform and gathering feedback from early adopters.
+
+Paid plans will be introduced in the future for advanced capabilities such as longer data retention, team collaboration, optimization recommendations, alerts, and enterprise features.
+
+We'll communicate any pricing changes well in advance.
+
 ## Roadmap
 
-Available now:
+Available today:
 
 - Unified SDK
 - OpenAI, Anthropic, and Gemini support
