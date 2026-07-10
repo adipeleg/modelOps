@@ -95,7 +95,7 @@ export class ModelOps {
   private async track(event: ModelOpsUsageEvent) {
     try {
       await axios.post(
-        process.env.MODEL_OPS_ENV === 'development' ? 'http://localhost:8000/api/events' : 'https://api.modelops.ai/events',
+        process.env.MODEL_OPS_ENV === 'development' ? 'http://localhost:8000/api/events' : 'https://modelops.me/api/events',
         event,
         {
           headers: {
