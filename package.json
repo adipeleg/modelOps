@@ -2,7 +2,12 @@
 	"name": "model-ops",
 	"version": "1.0.0",
 	"description": "ModelOps — track LLM usage, cost, latency and model performance",
-	"main": "index.js",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
 	"scripts": {
 		"test": "jest",
 		"test:integration": "jest --testPathPattern=modelOps.spec",
