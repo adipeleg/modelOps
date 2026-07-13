@@ -209,6 +209,8 @@ Coming soon:
 ## Links
 
 - Product dashboard: https://modelops.me
+- npm package: https://www.npmjs.com/package/model-ops
+- GitHub repository: https://github.com/adipeleg/modelOps
 
 ## License
 

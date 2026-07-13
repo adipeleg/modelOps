@@ -29,6 +29,14 @@
 	],
 	"author": "",
 	"license": "ISC",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/adipeleg/modelOps.git"
+	},
+	"homepage": "https://modelops.me",
+	"bugs": {
+		"url": "https://github.com/adipeleg/modelOps/issues"
+	},
 	"devDependencies": {
 		"@types/jest": "^30.0.0",
 		"jest": "^29.6.1",
