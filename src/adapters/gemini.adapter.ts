@@ -2,55 +2,57 @@
 import { GoogleGenAI } from "@google/genai";
 import { ModelOpsChatRequest, NormalizedLLMResponse } from "../modelOps.types";
 import { BaseAdapter } from "./baseAdapter";
+import { getConversationMessages, getSystemInstruction } from "./messageUtils";
 import { registerAdapter } from "./registry";
-
 
 export class GeminiAdapter extends BaseAdapter {
   protected client?: GoogleGenAI;
 
   constructor(apiKey: string, client?: GoogleGenAI) {
-    if (!apiKey) {
+    super();
+
+    if (!apiKey && !client) {
       return;
     }
-    const resolvedClient = client ?? new GoogleGenAI({ apiKey });
-    super();
-    this.client = resolvedClient;
+
+    this.client = client ?? new GoogleGenAI({ apiKey });
   }
 
   async chat(request: ModelOpsChatRequest): Promise<NormalizedLLMResponse> {
+    const system = getSystemInstruction(request.messages);
+    const conversationMessages = getConversationMessages(request.messages);
 
-    const system = request.messages.find((m) => m.role === "system")?.content;
-
-    const contents = request.messages
-      .filter((m) => m.role !== "system")
+    const contents = conversationMessages
       .map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
         parts: [{ text: m.content }],
       }));
 
     const response = await this.client?.models.generateContent({
-      model: request.model,
+      model: request?.model,
       contents,
       config: {
-        temperature: request.temperature,
-        maxOutputTokens: request.maxTokens,
+        temperature: request?.temperature,
+        maxOutputTokens: request?.maxTokens,
         systemInstruction: system,
         responseMimeType:
-          request.responseFormat === "json_object"
+          request?.responseFormat === "json_object"
             ? "application/json"
             : undefined,
       },
     });
 
+    const content = response?.text ?? response?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
     return {
       raw: response,
-      content: response?.text ?? "",
+      content,
       usage: {
-        inputTokens: response?.usageMetadata?.promptTokenCount,
-        outputTokens: response?.usageMetadata?.candidatesTokenCount,
-        totalTokens: response?.usageMetadata?.totalTokenCount,
+        inputTokens: response?.usageMetadata?.promptTokenCount ?? 0,
+        outputTokens: response?.usageMetadata?.candidatesTokenCount ?? 0,
+        totalTokens: response?.usageMetadata?.totalTokenCount ?? 0,
       },
-      model: request.model,
+      model: request?.model,
       provider: "gemini",
     };
   }

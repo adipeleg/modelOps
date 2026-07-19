@@ -1,6 +1,6 @@
 {
 	"name": "model-ops",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "ModelOps — track LLM usage, cost, latency and model performance",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

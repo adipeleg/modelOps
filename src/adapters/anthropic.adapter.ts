@@ -2,58 +2,57 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { ModelOpsChatRequest, NormalizedLLMResponse } from "../modelOps.types";
 import { BaseAdapter } from "./baseAdapter";
+import { getConversationMessages, getSystemInstruction } from "./messageUtils";
 import { registerAdapter } from "./registry";
 
 export class AnthropicAdapter extends BaseAdapter {
   private client?: Anthropic;
-  constructor(apiKey: string, client?: Anthropic) {
 
-    if (!apiKey) {
+  constructor(apiKey: string, client?: Anthropic) {
+    super();
+
+    if (!apiKey && !client) {
       return;
     }
 
-    const resolvedClient = client ?? new Anthropic({ apiKey });
-    super();
-    this.client = resolvedClient;
+    this.client = client ?? new Anthropic({ apiKey });
   }
 
   async chat(request: ModelOpsChatRequest): Promise<NormalizedLLMResponse> {
-
-    const system = request.messages
-      .filter((m) => m.role === "system")
-      .map((m) => m.content)
-      .join("\n");
-
-    const messages = request.messages
-      .filter((m) => m.role !== "system")
+    const system = getSystemInstruction(request.messages);
+    const messages = getConversationMessages(request.messages)
       .map((m) => ({
-        role: m.role as "user" | "assistant",
-        content: m.content,
+        role: m?.role as "user" | "assistant",
+        content: m?.content,
       }));
 
-    const response = await this.client?.messages.create({
-      model: request.model,
-      max_tokens: request.maxTokens ?? 1024,
-      temperature: request.temperature,
-      system: system || undefined,
+    const response = await this.client?.messages?.create({
+      model: request?.model,
+      max_tokens: request?.maxTokens ?? 1024,
+      temperature: request?.temperature,
+      system,
       messages,
     });
 
-    const content =
-      response?.content[0]?.type === "text" ? response.content[0].text : "";
+    const content = response?.content
+      .map((block) => (block.type === "text" ? (block as { text: string }).text : ""))
+      .join("");
+
+    const inputTokens = response?.usage?.input_tokens ?? 0;
+    const outputTokens = response?.usage?.output_tokens ?? 0;
 
     return {
       raw: response,
-      content,
+      content: content ?? "",
       usage: {
-        inputTokens: response?.usage.input_tokens,
-        outputTokens: response?.usage.output_tokens,
-        totalTokens: (response?.usage.input_tokens ?? 0) + (response?.usage.output_tokens ?? 0),
+        inputTokens,
+        outputTokens,
+        totalTokens: inputTokens + outputTokens,
       },
-      model: response?.model ?? request.model,
+      model: response?.model ?? request?.model,
       provider: "anthropic",
     };
   }
-};
+}
 
 registerAdapter("anthropic", AnthropicAdapter);
